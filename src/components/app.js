@@ -8,7 +8,7 @@ import { useDispatch } from "react-redux";
 import { addCampaigns } from "../redux/actions/campaignActions";
 import { validateCampaignList } from "../utils/validator";
 
-import HomeRoutes from '../routes/home'
+import MainRoutes from '../routes/main'
 import Header from './header'
 import {BrowserRouter as Router} from "react-router-dom";
 
@@ -24,14 +24,13 @@ function App() {
 
     return (
         <Router>
-
-        <div className='app'>
-            <Header/>
-            <Container className='main-content'>
-                <HomeRoutes/>
-            </Container>
-            <NotificationContainer />
-        </div>
+            <div className='app'>
+                <Header/>
+                <Container className='main-content'>
+                    <MainRoutes/>
+                </Container>
+                <NotificationContainer />
+            </div>
         </Router>
     );
 }

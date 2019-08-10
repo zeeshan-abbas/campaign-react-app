@@ -1,0 +1,15 @@
+.campaign-item {
+  .indicator {
+    height: 12px;
+    width: 12px;
+    border-radius: 50%;
+    margin-right: 4px;
+    display: inline-block;
+    &.active {
+      background-color: green;
+    }
+    &.inactive {
+      background-color: red;
+    }
+  }
+}

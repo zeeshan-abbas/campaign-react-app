@@ -1,35 +1,37 @@
 import 'react-datepicker/dist/react-datepicker.css';
 import './campaigns.scss';
 
-import React,  { useState } from 'react';
-import { Table, Pagination, Row, Col, Form } from 'react-bootstrap';
-import { useSelector } from 'react-redux';
-import DatePicker from "react-datepicker";
+import React, {useState} from 'react';
+import {Col, Form, Pagination, Row, Table} from 'react-bootstrap';
+import {useSelector} from 'react-redux';
+import DatePicker from 'react-datepicker';
+import {
+    applyDateFilter,
+    applySearch,
+    applyPagination,
+    isCampaignActive,
+    formatBudget
+} from './campaigns.util';
+import useDebounce from '../../hooks/debouce';
 import Item from './item';
 
-const ITEMS_PER_PAGE = 2;
+const ITEMS_PER_PAGE = 4;
 
-export default function Campaigns(props) {
-    const [state, setState] = useState({
-        page: 1,
-        searchText: '',
-        startDateText: '',
-        endDateText: ''
-    });
+export default function Campaigns() {
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [searchText, setSearchText] = useState('');
+    const debouncedSearchText = useDebounce(searchText, 500);
+    console.log('debounce', debouncedSearchText);
+    let campaignList = useSelector(state => state.campaign);
+    campaignList = applyDateFilter(campaignList, startDate, endDate);
+    campaignList = applySearch(campaignList, debouncedSearchText);
 
-    const campaignList = useSelector(state => state.campaign);
-    const campaignDiv = campaignList.map((campaign, index) => <Item key={index} {...campaign} />);
-
-    const handlePageChange = page => {
-        setState({page})
-    };
-
-    const totalPages = Math.ceil(campaignList.length / ITEMS_PER_PAGE);
-    const pages = Array.from({length: totalPages}).map((val, index) => {
-        const pageNo = index + 1;
-        return <Pagination.Item onClick={handlePageChange.bind(this, pageNo)} key={index} active={pageNo === state.page}>{pageNo}</Pagination.Item>
-    });
-
+    const paginatedList = applyPagination(campaignList, currentPage, ITEMS_PER_PAGE);
+    const campaignDiv = getCampaignDiv(paginatedList);
+    const paginationDiv = getPaginationDiv(campaignList.length, currentPage, setCurrentPage);
+    console.log('rendering');
     return (
         <div className='main-content'>
             <Row className='content-title'>
@@ -38,20 +40,35 @@ export default function Campaigns(props) {
             <Row className='filters-row'>
                 <Col sm={3} md='auto' lg={2}>
                     <DatePicker
-                        className="form-control"
-                        onChange={() => {}}
-                        placeholderText="Start Date"
+                        className='form-control'
+                        placeholderText='Start Date'
+                        selectsStart
+                        selected={startDate}
+                        startDate={startDate}
+                        endDate={endDate}
+                        maxDate={endDate}
+                        onChange={date => {setStartDate(date)}}
                     />
                 </Col>
                 <Col sm={3} md='auto' lg={2}>
                     <DatePicker
-                        className="form-control"
-                        onChange={() => {}}
-                        placeholderText="End Date"
+                        className='form-control'
+                        placeholderText='End Date'
+                        selectsEnd
+                        selected={endDate}
+                        startDate={startDate}
+                        endDate={endDate}
+                        minDate={startDate}
+                        onChange={date => {setEndDate(date)}}
                     />
                 </Col>
                 <Col md='auto' lg={{span: 4, offset: 4}}>
-                    <Form.Control type="search" placeholder="Search" />
+                    <Form.Control
+                        type='search'
+                        placeholder='Search'
+                        value={searchText}
+                        onChange={e => setSearchText(e.target.value)}
+                    />
                 </Col>
             </Row>
             <Table className='table-content' responsive>
@@ -68,7 +85,34 @@ export default function Campaigns(props) {
                 {campaignDiv}
                 </tbody>
             </Table>
-            <Pagination className="justify-content-center" size="sm">{pages}</Pagination>
+            <Pagination className='justify-content-center' size='sm'>{paginationDiv}</Pagination>
         </div>
     );
+}
+
+function getCampaignDiv(campaignList) {
+    return campaignList.map(({id, name, startDate, endDate, Budget}, index) => {
+        return <Item
+            key={id}
+            name={name}
+            startDate={startDate}
+            endDate={endDate}
+            isActive={isCampaignActive(startDate, endDate)}
+            budget={formatBudget(Budget)} />
+    });
+}
+
+function getPaginationDiv(totalItems, currentPage, setCurrentPage) {
+    const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+    const pagesDiv = Array.from({length: totalPages}).map((val, index) => {
+        const pageNo = index + 1;
+        return (
+            <Pagination.Item
+                key={index}
+                onClick={() => setCurrentPage(pageNo)}
+                active={pageNo === currentPage} >
+                {pageNo}
+            </Pagination.Item>)
+    });
+    return pagesDiv;
 }

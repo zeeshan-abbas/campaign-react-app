@@ -11,12 +11,12 @@ const defaults = {
 
 const campaignSchema = {
     type: 'object',
-    required: ['id', 'name', 'startDate', 'endDate','Budget'],
+    required: ['id', 'name', 'Budget'],
     properties: {
         id: { type: 'number'},
         name: {type: 'string'},
-        startDate: {type: 'string'},
-        endDate: {type: 'string'},
+        startDate: {type: 'date'},
+        endDate: {type: 'date'},
         Budget: {type: 'number'}
     }
 };
@@ -50,7 +50,7 @@ const _handleError = (errors) => {
     const error = errors[0];
     if (error.keyword === 'required') {
         return `${error.params.missingProperty} is required`;
-    } else if (error.keyword === 'minLength' || error.keyword == 'maxLength' || error.keyword === 'type') {
+    } else if (error.keyword === 'minLength' || error.keyword === 'maxLength' || error.keyword === 'type') {
         return `${error.dataPath.replace('.', '')} ${error.message}`;
     } else {
         return error.message;
