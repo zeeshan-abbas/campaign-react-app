@@ -7,10 +7,11 @@ import logo from '../../logo.svg'
 
 export default function Header() {
     return (
-        <Navbar bg='dark' variant='dark' expand='lg' className='top-nav'>
+        <Navbar data-test="headerComponent" bg='dark' variant='dark' expand='lg' className='top-nav'>
             <Container>
                 <Navbar.Brand as='span'>
                     <img
+                        data-test="logoIMG"
                         src={logo}
                         alt='Logo'
                         width='30'

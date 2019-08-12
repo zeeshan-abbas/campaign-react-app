@@ -1,8 +1,8 @@
-import { ACTION_CAMPAIGN_ADD_ALL } from '../../constants';
+import { CAMPAIGN_ADD_ALL } from './types';
 
 export function addCampaigns(campaigns) {
     return {
-        type: ACTION_CAMPAIGN_ADD_ALL,
+        type: CAMPAIGN_ADD_ALL,
         payload: campaigns
     };
 }

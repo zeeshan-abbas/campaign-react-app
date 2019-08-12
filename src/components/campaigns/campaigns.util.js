@@ -35,18 +35,27 @@ export function applyPagination(campaignList, currentPage, itemsPerPage) {
     if (!campaignList) {
         return [];
     }
+    if (!currentPage) {
+        return campaignList;
+    }
+    if (!itemsPerPage) {
+        return campaignList;
+    }
     const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = currentPage * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
     return campaignList.slice(startIndex, endIndex);
 }
 
-export function isCampaignActive(startDate, endDate) {
+export function isCampaignActive(startDate, endDate, activeDate) {
+    if (!activeDate) {
+        activeDate = new Date();
+    }
     if (startDate && endDate) {
-        return isWithinRange(new Date(), startDate, endDate);
+        return isWithinRange(activeDate, startDate, endDate);
     } else if (startDate) {
-        return isAfter(new Date(), startDate);
+        return isAfter(activeDate, startDate);
     } else if (endDate) {
-        return isBefore(new Date(), endDate);
+        return isBefore(activeDate, endDate);
     }
     return false;
 }

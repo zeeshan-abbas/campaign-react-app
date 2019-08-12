@@ -12,18 +12,17 @@ import {
     isCampaignActive,
     formatBudget
 } from './campaigns.util';
+import { ITEMS_PER_PAGE } from '../../constants';
 import useDebounce from '../../hooks/debouce';
 import Item from './item';
-
-const ITEMS_PER_PAGE = 4;
 
 export default function Campaigns() {
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [searchText, setSearchText] = useState('');
-    const debouncedSearchText = useDebounce(searchText, 500);
-    console.log('debounce', debouncedSearchText);
+    const debouncedSearchText = useDebounce(searchText);
+
     let campaignList = useSelector(state => state.campaign);
     campaignList = applyDateFilter(campaignList, startDate, endDate);
     campaignList = applySearch(campaignList, debouncedSearchText);
@@ -31,7 +30,6 @@ export default function Campaigns() {
     const paginatedList = applyPagination(campaignList, currentPage, ITEMS_PER_PAGE);
     const campaignDiv = getCampaignDiv(paginatedList);
     const paginationDiv = getPaginationDiv(campaignList.length, currentPage, setCurrentPage);
-    console.log('rendering');
     return (
         <div className='main-content'>
             <Row className='content-title'>
@@ -91,7 +89,7 @@ export default function Campaigns() {
 }
 
 function getCampaignDiv(campaignList) {
-    return campaignList.map(({id, name, startDate, endDate, Budget}, index) => {
+    return campaignList.map(({id, name, startDate, endDate, Budget}) => {
         return <Item
             key={id}
             name={name}
@@ -104,7 +102,7 @@ function getCampaignDiv(campaignList) {
 
 function getPaginationDiv(totalItems, currentPage, setCurrentPage) {
     const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
-    const pagesDiv = Array.from({length: totalPages}).map((val, index) => {
+    return Array.from({length: totalPages}).map((val, index) => {
         const pageNo = index + 1;
         return (
             <Pagination.Item
@@ -114,5 +112,4 @@ function getPaginationDiv(totalItems, currentPage, setCurrentPage) {
                 {pageNo}
             </Pagination.Item>)
     });
-    return pagesDiv;
 }

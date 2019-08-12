@@ -23,15 +23,15 @@ function App() {
     };
 
     return (
-        <Router>
-            <div className='app'>
-                <Header/>
-                <Container className='main-content'>
+        <div className='app' data-test="appComponent">
+            <Router>
+                <Header data-test="header"/>
+                <Container className='main-content' data-test="mainContent">
                     <MainRoutes/>
                 </Container>
                 <NotificationContainer />
-            </div>
-        </Router>
+            </Router>
+        </div>
     );
 }
 

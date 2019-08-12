@@ -1,0 +1,1 @@
+export const CAMPAIGN_ADD_ALL = 'CAMPAIGN_ADD_ALL';
