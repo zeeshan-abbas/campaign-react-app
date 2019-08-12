@@ -21,6 +21,7 @@ Following requirements has been implemented.
     * The Budget (in USD dollar)
 - A Search Form before the list in order to filter the list by Campaign Name
 - A DateRange component that filters the list of campaigns based on a Start and End Date.
+
         * If the campaign has a startDate that is contained in the range, it should show
         * If the campaign has an endDate that is contained in the range, it should show.
         * You should not be able to select an end-date that is before the start-date.
@@ -35,6 +36,6 @@ Following requirements has been implemented.
 
 ## Test Case
 
-This project includes Unit Tests & Integration Testing (Only written for App & Header Component). To run the Test cases use `npn test` command.
+This project includes Unit Tests & Integration Testing (Only written for App & Header Component). To run the Test cases use `npm test` command.
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
